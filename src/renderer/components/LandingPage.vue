@@ -4,12 +4,6 @@
 
     <md-layout md-gutter >
 
-        <md-card style="width:300px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33">
-
-            <div id="myDiv" ref="myDiv">
-            </div>
-        </md-card>
-
         <md-card style="width:300px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-if="value.sections.length > 0"  v-for="(value, propertyName) in state" v-bind:data="propertyName" v-bind:key="value">
             <md-theme md-name="purple">
 
@@ -61,9 +55,6 @@ export default {
     },
     mounted: function() {
 
-        let that = this;
-
-        let consoleThing = this.$refs.myDiv;
         new function () {
 
             const {shell} = require('electron');
