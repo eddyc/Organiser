@@ -1,5 +1,7 @@
 
-![alt text](./app/icons/Logo.png "Logo Title Text 1")
+
+<img src="./app/icons/Logo.png" width="300">
+
 
 # organiser
 
