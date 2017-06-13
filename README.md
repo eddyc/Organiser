@@ -1,3 +1,6 @@
+
+![alt text](./app/icons/Logo.png "Logo Title Text 1")
+
 # organiser
 
 > Easily capture and view notes from text files written using markdown
