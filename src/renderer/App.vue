@@ -11,5 +11,8 @@
 </script>
 
   <style src="vue-material/dist/vue-material.css">
+  body {
 
+      background-color: black;
+  }
   </style>

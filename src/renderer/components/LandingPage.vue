@@ -1,30 +1,23 @@
 <template>
-
-
-
     <md-layout md-gutter >
-
-        <md-card style="width:300px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-if="value.sections.length > 0"  v-for="(value, propertyName) in state" v-bind:data="propertyName" v-bind:key="value">
-            <md-theme md-name="purple">
-
+        <md-layout id="sortable">
+            <md-card style="width:400px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-for="note in state" v-bind:key="note.key">
                 <md-card-header>
-                    <div class="md-title">{{value.fileName}}</div>
-                    <span style="cursor:pointer;
-                    word-wrap:break-word; font-size:11px" v-on:click="openFile(value.filePath)" class="md-subhead">{{value.filePath}}</span>
-
+                    <div class="md-title">{{note.data.fileName}}</div>
+                    <span style="cursor:pointer; word-wrap:break-word; font-size:11px" v-on:click="openFile(note.data.filePath)" class="md-subhead">{{note.data.filePath}}</span>
                 </md-card-header>
-            </md-theme>
 
-            <md-card-content>
-                <md-divider></md-divider>
-                <div v-for="(section, index) in value.sections">
-                    <div v-html="section"></div>
+                <md-card-content>
+                    <md-divider></md-divider>
+                    <div v-for="(section, index) in note.data.sections">
+                        <div v-html="section"></div>
 
-                    <md-divider v-if="index < value.sections.length - 1"></md-divider>
+                        <md-divider v-if="index < note.data.sections.length - 1"></md-divider>
 
-                </div>
-            </md-card-content>
-        </md-card>
+                    </div>
+                </md-card-content>
+            </md-card>
+        </md-layout>
 
         <md-divider md-inset></md-divider>
     </md-layout>
@@ -32,8 +25,15 @@
 
 <script>
 import SystemInformation from './LandingPage/SystemInformation'
+import Sortable from 'sortablejs'
 
-let applicationState = {"null":{"fileName":"null", "filePath":"null", "sections":[]}};
+let applicationState = [{"key":0, "data":{"fileName":"null", "filePath":"null", "sections":[]}}];
+
+
+Array.prototype.move = function(from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+};
+
 
 export default {
     name: 'landing-page',
@@ -60,6 +60,8 @@ export default {
         new function () {
 
             const {shell} = require('electron');
+            const {ipcRenderer} = require('electron');
+
             let counter = 1;
             require('electron').ipcRenderer.on('applicationState', (event, message) => {
 
@@ -72,14 +74,27 @@ export default {
                     body: message.body
                 })
             });
+
+            Sortable.create(document.getElementById("sortable"),{
+
+                onUpdate: function (event) {
+
+                    that.state.move(event.oldIndex,event.newIndex);
+                    ipcRenderer.send('reorder', that.state);
+
+                }
+            });
         };
     }
 }
-
 
 </script>
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
+body.md-theme-default {
+
+    background: #4e4e4e;
+}
 </style>

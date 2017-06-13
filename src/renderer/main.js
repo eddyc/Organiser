@@ -1,4 +1,5 @@
 import Vue from 'vue'
+
 import axios from 'axios'
 
 import App from './App'
@@ -12,16 +13,11 @@ var VueMaterial = require('vue-material');
 
 Vue.use(VueMaterial);
 
-Vue.material.registerTheme('about', {
-  primary: {
-    color: 'indigo',
-    hue: 'A200'
-  },
-  accent: {
-    color: 'grey',
-    hue: 300
-  }
-})
+// Vue.use(Sortable);
+
+
+
+Vue.material.registerTheme('default', { primary: 'indigo', accent: { color: 'indigo', hue: 700 }, warn: 'red', });
 
 /* eslint-disable no-new */
 let vue = new Vue({
@@ -31,4 +27,5 @@ let vue = new Vue({
   template: '<App/>'
 }).$mount('#app')
 
-Vue.material.setCurrentTheme('about')
+
+Vue.material.setCurrentTheme('default')
