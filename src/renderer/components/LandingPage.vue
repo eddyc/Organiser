@@ -55,6 +55,8 @@ export default {
     },
     mounted: function() {
 
+        let that = this;
+
         new function () {
 
             const {shell} = require('electron');

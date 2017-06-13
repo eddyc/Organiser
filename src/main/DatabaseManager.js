@@ -6,11 +6,14 @@ export default class DatabaseManager {
 
         this.parseFile = parseFile;
         this.restart(parseFile);
-        this.databasePath = "/Users/eddyc/Desktop/database.json";
+
     }
 
     restart(parseFile) {
-        this.database = require("/Users/eddyc/Desktop/database");
+
+        let fs = require('fs');
+        this.databasePath = "/Users/eddyc/Desktop/database.json";
+        this.database = JSON.parse(fs.readFileSync(this.databasePath, 'utf8'));
 
         let chokidar = require("chokidar");
         let paths = this.getFilePaths();
