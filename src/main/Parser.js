@@ -1,24 +1,3 @@
-/*
-
-====
-[ ] Stuff
-
-
-More stuff
-
-====
-*/
-
-/*
-
-====
-black
-
-thing
-====
-
-*/
-
 "use strict"
 
 
@@ -32,10 +11,25 @@ export default class Parser {
 
     parseFile(path) {
 
+        let extension = path.split('.').pop();
         let file = this.fs.readFileSync(path, "utf8");
-        let marked = require("marked");
         let lines = file.split("\n");
         let fileName = path.replace(/^.*(\\|\/|\:)/, '');
+        let marked = require("marked");
+
+        if (extension === "md" || extension === "markdown") {
+
+            console.log(file);
+
+            let data = {
+                sections:[marked(file)],
+                filePath:path,
+                fileName:fileName
+            };
+            return data;
+        }
+
+
         let sections = [];
         let insideBlock = false;
         let blockLines = "";

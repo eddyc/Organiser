@@ -1,7 +1,7 @@
 <template>
     <md-layout md-gutter >
         <md-layout id="sortable">
-            <md-card style="width:400px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-for="note in state" v-bind:key="note.key">
+            <md-card style="width:350px; max-width:500px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-for="note in state" v-bind:key="note.key">
                 <md-card-header>
                     <div class="md-title">{{note.data.fileName}}</div>
                     <span style="cursor:pointer; word-wrap:break-word; font-size:11px" v-on:click="openFile(note.data.filePath)" class="md-subhead">{{note.data.filePath}}</span>
