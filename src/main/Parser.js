@@ -17,9 +17,7 @@ export default class Parser {
         let fileName = path.replace(/^.*(\\|\/|\:)/, '');
         let marked = require("marked");
 
-        if (extension === "md" || extension === "markdown") {
-
-            console.log(file);
+        if (extension === "md" || extension === "markdown" || extension === "todo") {
 
             let data = {
                 sections:[marked(file)],
@@ -33,12 +31,15 @@ export default class Parser {
         let sections = [];
         let insideBlock = false;
         let blockLines = "";
+        let blockIndent = 0;
+
         for (let i = 0; i < lines.length; ++i) {
 
             if (lines[i].includes(this.blockDelimiter) === true) {
 
                 if (insideBlock === false) {
 
+                    blockIndent = lines[i].indexOf(this.blockDelimiter);
                     insideBlock = true;
                     continue;
                 }
@@ -52,9 +53,20 @@ export default class Parser {
             }
             else if (insideBlock === true) {
 
+                let whiteSpaceLength = lines[i].search(/\S|$/);
+
+                if (whiteSpaceLength < blockIndent) {
+
+                    lines[i] = lines[i].substring(whiteSpaceLength);
+                }
+                else {
+
+                    lines[i] = lines[i].substring(blockIndent);
+                }
                 blockLines += lines[i] + "\n";
             }
         }
+
 
         let data = {
             sections:sections,

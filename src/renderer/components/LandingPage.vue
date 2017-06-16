@@ -81,6 +81,7 @@ export default {
 
                     that.state.move(event.oldIndex,event.newIndex);
                     ipcRenderer.send('reorder', that.state);
+                    console.log(that.state);
 
                 }
             });
