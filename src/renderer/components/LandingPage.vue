@@ -10,7 +10,7 @@
                 <md-card-content>
                     <md-divider></md-divider>
                     <div v-for="(section, index) in note.data.sections">
-                        <div v-html="section"></div>
+                        <div v-html="section" class="section"></div>
 
                         <md-divider v-if="index < note.data.sections.length - 1"></md-divider>
 
@@ -91,11 +91,29 @@ export default {
 
 </script>
 
+<style src="highlight.js/styles/monokai.css">
+</style>
 <style>
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
 body.md-theme-default {
 
     background: #4e4e4e;
 }
+
+pre {
+
+    background: black;
+    white-space: pre-wrap;
+    padding:5px;
+    border-radius:4px;
+    font-weight: bold;
+    overflow: scroll;
+}
+
+.md-theme-default code:not(.hljs) {
+
+    background-color:rgba(0, 0, 0, 0);
+    color:white;
+}
+
 </style>

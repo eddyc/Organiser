@@ -7,6 +7,27 @@ export default class Parser {
 
         this.blockDelimiter = blockDelimiter;
         this.fs = require("fs");
+        this.marked = require("marked");
+
+        this.marked.setOptions({
+            highlight: function (code) {
+                return require('highlight.js').highlightAuto(code).value;
+            },
+            sanitize:true,
+            pedantic:true
+        });
+
+        // this.renderer = new this.marked.Renderer();
+        //
+        // this.renderer.code = function (text, level) {
+        //
+        //     console.log(text);
+        //     var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+        //
+        //     return text + level;
+        // }
+
+
     }
 
     parseFile(path) {
@@ -15,12 +36,13 @@ export default class Parser {
         let file = this.fs.readFileSync(path, "utf8");
         let lines = file.split("\n");
         let fileName = path.replace(/^.*(\\|\/|\:)/, '');
-        let marked = require("marked");
 
         if (extension === "md" || extension === "markdown" || extension === "todo") {
 
+            let rendered = this.marked(file, {renderer: this.renderer});
+
             let data = {
-                sections:[marked(file)],
+                sections:[rendered],
                 filePath:path,
                 fileName:fileName
             };
@@ -45,7 +67,8 @@ export default class Parser {
                 }
                 else if (insideBlock === true) {
 
-                    sections.push(marked(blockLines));
+                    let rendered = this.marked(blockLines);
+                    sections.push(rendered);
                     blockLines = "";
                     insideBlock = false;
                     continue;
