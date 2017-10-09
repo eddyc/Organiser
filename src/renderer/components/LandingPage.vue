@@ -1,26 +1,111 @@
 <template>
-    <md-layout md-gutter >
-        <md-layout id="sortable">
-            <md-card style="width:350px; max-width:500px; flex-grow:1; margin:5px" md-flex-xsmall="100" md-flex-small="50" md-flex-medium="25" md-flex-large="33" v-for="note in state" v-bind:key="note.key">
-                <md-card-header>
-                    <div class="md-title">{{note.data.fileName}}</div>
-                    <span style="cursor:pointer; word-wrap:break-word; font-size:11px" v-on:click="openFile(note.data.filePath)" class="md-subhead">{{note.data.filePath}}</span>
-                </md-card-header>
+    <v-app id="example-2">
+        <!-- <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer">
+        <v-list class="pa-0">
+        <v-list-item>
+        <v-list-tile avatar tag="div">
+        <v-list-tile-avatar>
+        <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+    </v-list-tile-avatar>
+    <v-list-tile-content>
+    <v-list-tile-title>John Leider</v-list-tile-title>
+</v-list-tile-content>
+<v-list-tile-action>
+<v-btn icon @click.native.stop="mini = !mini">
+<v-icon>chevron_left</v-icon>
+</v-btn>
+</v-list-tile-action>
+</v-list-tile>
+</v-list-item>
+</v-list>
+<v-list class="pt-0" dense>
+<v-divider></v-divider>
+<v-list-item v-for="item in items" :key="item">
+<v-list-tile>
+<v-list-tile-action>
+<v-icon>{{ item.icon }}</v-icon>
+</v-list-tile-action>
+<v-list-tile-content>
+<v-list-tile-title>{{ item.title }}</v-list-tile-title>
+</v-list-tile-content>
+</v-list-tile>
+</v-list-item>
+</v-list>
+</v-navigation-drawer> -->
+<v-toolbar fixed class="indigo darken-4" light>
+    <v-toolbar-side-icon light @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar-title>Organiser</v-toolbar-title>
+</v-toolbar>
+<main>
+    <v-container fluid>
+        <v-layout style="" ref="sortable" row-sm column child-flex-sm >
 
-                <md-card-content>
-                    <md-divider></md-divider>
-                    <div v-for="(section, index) in note.data.sections">
-                        <div v-html="section" class="section"></div>
+            <v-card style=" margin:5px; padding:3px"  v-for="note in state" :key="note.key">
+                <v-card-row class="blue darken-1" >
+                    <v-card-title>
+                        <span class="white--text">{{note.data.fileName}}</span>
+                        <v-spacer></v-spacer>
+                        <div>
+                            <v-menu id="marriot" bottom left origin="top right">
+                                <v-btn icon="icon" slot="activator" class="white--text">
+                                    <v-icon>more_vert</v-icon>
+                                </v-btn>
+                                <v-list>
+                                    <v-list-item>
+                                        <v-list-tile>
+                                            <v-list-tile-title>Never show rewards</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-list-tile>
+                                            <v-list-tile-title>Remove Card</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-list-tile>
+                                            <v-list-tile-title>Send Feedback</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
+                        </div>
+                    </v-card-title>
+                </v-card-row>
 
-                        <md-divider v-if="index < note.data.sections.length - 1"></md-divider>
+                <v-card-row style="overflow:hidden; " class="white">
 
-                    </div>
-                </md-card-content>
-            </md-card>
-        </md-layout>
+                    <v-subheader style="cursor:pointer; word-wrap:break-word; font-size:15px" v-on:click="openFile(note.data.filePath)" class="md-subhead">{{note.data.filePath}}</v-subheader>
 
-        <md-divider md-inset></md-divider>
-    </md-layout>
+                </v-card-row>
+
+                <v-divider></v-divider>
+                <div v-if="note.data.sections.length > 1" style="margin:5px; text-align:center!important">
+
+                    <v-pagination  v-bind:length.number="note.data.sections.length" v-model="note.data.selectedSection"></v-pagination>
+                </div>
+
+                <v-card-row>
+                    <v-card-text style=" ">
+
+
+                        <div v-html="note.data.sections[note.data.selectedSection-1]" class="section"></div>
+                    </v-card-text>
+
+
+                </v-card-row>
+                <!-- <v-divider></v-divider> -->
+
+
+
+            </v-card>
+
+
+        </v-layout>
+
+        <!--v-router-->
+    </v-container>
+</main>
+</v-app>
 </template>
 
 <script>
@@ -50,11 +135,28 @@ export default {
     },
     data() {
         return {
-            state: applicationState
+            state: applicationState,
+            drawer: true,
+            items: [
+                { title: 'Home', icon: 'dashboard' },
+                { title: 'About', icon: 'question_answer' }
+            ],
+            mini: false,
+            right: null,
+            pages:1
+        }
+
+    },
+    computed: {
+        filteredCards: function () {
+            return this.numbers.filter(function (number) {
+                return number % 2 === 0
+            })
         }
     },
     mounted: function() {
 
+        console.log(this.$refs.sortable);
         let that = this;
 
         new function () {
@@ -75,7 +177,8 @@ export default {
                 })
             });
 
-            Sortable.create(document.getElementById("sortable"),{
+
+            Sortable.create(that.$refs.sortable,{
 
                 onUpdate: function (event) {
 
@@ -91,14 +194,15 @@ export default {
 
 </script>
 
-<style src="highlight.js/styles/monokai.css">
-</style>
+/*<style src="highlight.js/styles/monokai.css">
+</style>*/
 <style>
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-body.md-theme-default {
 
-    background: #4e4e4e;
-}
+/*body.md-theme-default {
+
+background: #4e4e4e;
+}*/
 
 pre {
 
@@ -106,14 +210,28 @@ pre {
     white-space: pre-wrap;
     padding:5px;
     border-radius:4px;
-    font-weight: bold;
+    font-weight: bolder;
     overflow: scroll;
 }
 
-.md-theme-default code:not(.hljs) {
+code {
 
     background-color:rgba(0, 0, 0, 0);
     color:white;
+    font-weight: bold;
+
 }
 
+.section {
+
+    width:100%;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.25s ease-out;
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
 </style>

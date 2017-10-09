@@ -1,18 +1,21 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+
+    <div id="app">
+        <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
-  export default {
+export default {
     name: 'organiser'
-  }
+}
 </script>
 
-  <style src="vue-material/dist/vue-material.css">
-  body {
+<style src="vuetify/dist/vuetify.min.css">
+body {
 
-      background-color: black;
-  }
-  </style>
+    background-color: black;
+}
+</style>

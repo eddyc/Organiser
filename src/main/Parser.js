@@ -37,12 +37,41 @@ export default class Parser {
         let lines = file.split("\n");
         let fileName = path.replace(/^.*(\\|\/|\:)/, '');
 
-        if (extension === "md" || extension === "markdown" || extension === "todo") {
 
+        let tags = [];
+        let newLines = []
+        let parseSections = false;
+
+        for (let i = 0; i < lines.length; ++i) {
+
+            if (lines[i].includes("tags:") === true) {
+
+                tags = tags.concat(lines[i].split("tags:")[1].split(",").map(x => {return x.trim()}));
+            }
+            else {
+
+                newLines.push(lines[i]);
+            }
+
+            if (lines[i].includes(this.blockDelimiter) === true) {
+
+                parseSections = true;
+            }
+        }
+
+        tags = Array.from(new Set(tags));
+
+        lines = newLines;
+
+        if (parseSections === false && (extension === "md" || extension === "markdown" || extension === "todo")) {
+
+            file = lines.join("\n");
             let rendered = this.marked(file, {renderer: this.renderer});
 
             let data = {
+                tags:tags,
                 sections:[rendered],
+                selectedSection:1,
                 filePath:path,
                 fileName:fileName
             };
@@ -92,7 +121,9 @@ export default class Parser {
 
 
         let data = {
+            tags:tags,
             sections:sections,
+            selectedSection:1,
             filePath:path,
             fileName:fileName
         };
